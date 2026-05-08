@@ -1,55 +1,133 @@
-<!DOCTYPE html>
+<?php
 
-<html lang="es" data-theme="customTheme">
+$error = "";
+$success = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    $nombre    = trim($_POST["nombre"] ?? "");
+    $correo    = trim($_POST["correo"] ?? "");
+    $password  = trim($_POST["password"] ?? "");
+    $confirmar = trim($_POST["confirmar"] ?? "");
+
+    try {
+
+        if (
+            empty($nombre) ||
+            empty($correo) ||
+            empty($password) ||
+            empty($confirmar)
+        ) {
+            throw new Exception("Todos los campos son obligatorios.");
+        }
+
+        if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("Correo inválido.");
+        }
+
+        if (strlen($password) < 8) {
+            throw new Exception("La contraseña debe tener mínimo 8 caracteres.");
+        }
+
+        if ($password !== $confirmar) {
+            throw new Exception("Las contraseñas no coinciden.");
+        }
+
+        $success = "Formulario enviado correctamente.";
+
+    } catch (Exception $e) {
+
+        $error = $e->getMessage();
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formularios</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <title>Formulario</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Clear+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="hero bg-base-200 min-h-screen">
-        <div class="hero-content text-center">
-            <div class="max-w-md">
-                <div class="flex w-full flex-col">
- 
-                    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-                        <legend class="fieldset-legend">Inicar Sesión</legend>
 
-                        <label class="label">Nombre</label>
-                        <input type="email" class="input" placeholder="Nombre Completo" />
+<div class="hero bg-base-200 min-h-screen">
 
-                        <label class="label">Correo</label>
-                        <input type="email" class="input" placeholder="Correo" />
+    <div class="hero-content">
 
-                        <label class="label">Contraseña</label>
-                        <input type="password" class="input" placeholder="Contraseña" />
+        <form method="POST">
 
-                        <label class="label">Confirmar Contraseña</label>
-                        <input type="password" class="input" placeholder="Confirmar Contraseña" />
+            <fieldset class="fieldset bg-base-100 border border-base-300 rounded-box p-6 w-96">
 
-                        <button class="btn btn-neutral mt-4">Ingresar</button>
-                    </fieldset>
- 
-                    <div class="divider">
-                        <span class="text-sm text-base-content/50"></span>
+                <legend class="fieldset-legend text-xl mb-2">
+                    Iniciar Sesión
+                </legend>
+
+                <!-- MENSAJE DE ERROR -->
+                <?php if (!empty($error)): ?>
+
+                    <div class="alert alert-error mb-4">
+                        <span><?= htmlspecialchars($error) ?></span>
                     </div>
- 
-                    
- 
-                </div>              
-            </div>
-        </div>
-    </div>
- 
-    
-</body>
 
+                <?php endif; ?>
+
+                <!-- MENSAJE DE ÉXITO -->
+                <?php if (!empty($success)): ?>
+
+                    <div class="alert alert-success mb-4">
+                        <span><?= htmlspecialchars($success) ?></span>
+                    </div>
+
+                <?php endif; ?>
+
+                <label class="label">Nombre</label>
+                <input
+                    type="text"
+                    name="nombre"
+                    class="input"
+                    placeholder="Nombre completo"
+                />
+
+                <label class="label">Correo</label>
+                <input
+                    type="email"
+                    name="correo"
+                    class="input"
+                    placeholder="Correo"
+                />
+
+                <label class="label">Contraseña</label>
+                <input
+                    type="password"
+                    name="password"
+                    class="input"
+                    placeholder="Contraseña"
+                />
+
+                <label class="label">Confirmar Contraseña</label>
+                <input
+                    type="password"
+                    name="confirmar"
+                    class="input"
+                    placeholder="Confirmar contraseña"
+                />
+
+                <button type="submit" class="btn btn-neutral mt-4">
+                    Ingresar
+                </button>
+
+            </fieldset>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
 </html>
