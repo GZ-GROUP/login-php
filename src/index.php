@@ -79,8 +79,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <!-- MENSAJE DE ÉXITO -->
                 <?php if (!empty($success)): ?>
 
-                    <div class="alert alert-success mb-4">
+                    <div class="alert alert-success mb-4 flex flex-col items-start">
                         <span><?= htmlspecialchars($success) ?></span>
+                        <small style="overflow-wrap:anywhere"><?= password_hash($password, PASSWORD_DEFAULT) ?></small>
                     </div>
 
                 <?php endif; ?>
